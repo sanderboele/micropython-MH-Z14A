@@ -14,7 +14,12 @@ UART pin connections can be configured, but these are default:
 
 # Example code
 ```python
+import mhz14a
+
 CO2Sensor = mhz14a.MHZ14A(uartNum=1, rxPin=18, txPin=19)
+
+# CO2 sensor needs to warm up, so after powering up
+# initial read may fail as it's still warming up
 
 attempts = 0
 ppm=0
@@ -24,5 +29,5 @@ while attempts < 3:
         print("CO2 value is: " + str(ppm) + " ppm")
         break
     else:
-        sleep_ms(250)
+        sleep_ms(500)
      
