@@ -1,5 +1,5 @@
 # micropython-MH-Z14A
-Micropython library for the MH-Z14A NDIR CO2 sensor. 
+Very simple Micropython library for the MH-Z14A NDIR CO2 sensor. 
 Tested to work with ESP32 and probably works with ESP8266
 
 # Connections:
