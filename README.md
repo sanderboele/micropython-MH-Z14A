@@ -12,7 +12,7 @@ UART pin connections can be configured, but these are default:
 |     Vin 1       |   5V     |
 |     GND 3       |   GND    |
 
-#Example code
+# Example code
 ```python
 CO2Sensor = mhz14a.MHZ14A(uartNum=1, rxPin=18, txPin=19)
 
