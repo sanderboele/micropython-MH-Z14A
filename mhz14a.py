@@ -1,5 +1,5 @@
 from machine import UART
-from time import sleep_ms
+from time import sleep_ms, ticks_ms, ticks_diff, sleep_us
 
 class MHZ14A():
     packet = [0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79]
@@ -15,22 +15,29 @@ class MHZ14A():
         """reads CO2 concentration from MH-Z14a sensors and returns ppm value"""
         packet = [0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79]
         try:
+            # flush serial
+            while self.uart.any() > 0:
+                self.uart.read(self.uart.any())
             self.uart.write(bytearray(packet))
-            sleep_ms(250)
+            start = ticks_ms()
+            while self.uart.any() < 9:
+                if ticks_diff(ticks_ms(), start) > 5000:
+                    print("Timeout reading CO2 sensor")
+                    return -4
             res = self.uart.read(9)
-            if res is not None:
+            if res is not None and len(res)==9:
                 checksum = 0xff & (~(res[1]+res[2]+res[3]+res[4]+res[5]+res[6]+res[7])+1)
                 if res[8] == checksum:
                     res = bytearray(res)
                     ppm = (res[2]<<8)|res[3]
                     return ppm
                 else:
-                    print("CO2 sensor reading checksum failed")
+                    print("CO2 sensor reading checksum failed. Result was: ", res)
                     return -1
             else:
                 print("CO2 sensor did not return data")
-                return -1
+                return -2
         except Exception as e:
             print("Exception reading sensor:")
             print(str(e))
-            return -1
+            return -3
