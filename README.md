@@ -27,7 +27,7 @@ attempts = 0
 ppm=0
 while attempts < 3:
     ppm = CO2Sensor.readCO2()
-    if ppm != -1:
+    if ppm > 0:
         print("CO2 value is: " + str(ppm) + " ppm")
         break
     else:
